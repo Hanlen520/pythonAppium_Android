@@ -10,7 +10,7 @@ virtualenv -p /usr/local/bin/python3 venv
 source venv/bin/activate
 
 # 安装python项目依赖
-pip3 install -r requirements.txt ${PIP_INSTALL_SOURCE}
+pip3 install -r requirements_init.txt ${PIP_INSTALL_SOURCE}
 
 # 退出 虚拟环境
 deactivate

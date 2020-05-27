@@ -44,7 +44,8 @@
 
 2.配置 gulpfile 依赖
 （1）修改：gulpfile_install.sh
-（2）执行：sh -x gulpfile_install.sh
+（2）删除：原有的 package.json 文件
+（3）执行：sh -x gulpfile_install.sh
 
 3.配置 Nginx -> python_appium_android.conf
 
@@ -101,6 +102,11 @@ sudo nginx -s reload
 
 【 配 置 Appium Android 环 境 】（ Mac 和 Docker 一样 ）
 
+【 安 装 工 具 】
+1.安装 android-sdk 工具（提供adb命令连接真机或模拟器、提供uiautomatorviewer 定位元素）
+2.安装 appium Desktop 工具（提供appium服务、提供定位元素功能）
+
+【 备 注 】
 由于：多线程并发启动不同设备进行测试时，每个用例中使用的appium服务和androidSDK服务都必须要是独立的
 所以：启动两个 Appium 服务
 
@@ -226,11 +232,8 @@ adb -s 15a6c95a shell input keyevent 26
 
 
 
-
 ########################################################################################################################
 
-
-【 Docker Centos7 相关 】
 
 
 【 服 务 端 配 置 Appium Android 环 境 】
@@ -330,7 +333,7 @@ adb -s 15a6c95a shell input keyevent 26
 
 
 【 框 架 工 具 】
- Python3 + appium + unittest + Flask + uWSGI + Nginx + Bootstrap + MongoDB + Docker + Fabric + Gulp
+ Python3 + Appium + unittest + Flask + uWSGI + Nginx + Bootstrap + MongoDB + Docker + Fabric + Gulp
 
 
 【 框 架 结 构 】（ 提高代码的：可读性、重用性、易扩展性 ）
@@ -351,14 +354,15 @@ adb -s 15a6c95a shell input keyevent 26
 
 【 功 能 点 】
 
-1.使用 Python3 + appium + unittest + Bootstrap:
+1.使用 Python3 + Appium + unittest + Bootstrap:
 （1）使用'unittest'作为测试用例框架
 （2）通过动态修改和添加'unittest.TestSuite'类中的方法和属性，实现启用多线程同时执行多条测试用例
-（3）通过修改'HTMLTestRunner'文件并结合'unittest'测试框架，优化了测试报告的展示方式，并提供了每个测试用例的截图显示
-（4）所有用例执行后，若有'失败'或'错误'的用例，则发送钉钉和邮件通知
-（5）提供日志记录功能：按照日期区分
-（6）提供定时任务：定时删除过期(一周前)的文件：日志、报告、截图文件(mongo数据)，定时执行测试用例
-（7）提供页面展示项目用例，实现用例上下线、批量执行用例、显示报告、用例运行进度等功能
+（3）通过启用多个Appium服务来实现多线程执行多用例的功能
+（4）通过修改'HTMLTestRunner'文件并结合'unittest'测试框架，优化了测试报告的展示方式，并提供了每个测试用例的截图显示
+（5）所有用例执行后，若有'失败'或'错误'的用例，则发送钉钉和邮件通知
+（6）提供日志记录功能：按照日期区分
+（7）提供定时任务：定时删除过期(一周前)的文件：日志、报告、截图文件(mongo数据)，定时执行测试用例
+（8）提供页面展示项目用例，实现用例上下线、批量执行用例、显示报告、用例运行进度等功能
 
 2.使用 Flask ：
 （1）提供 执行用例的接口
@@ -387,3 +391,4 @@ adb -s 15a6c95a shell input keyevent 26
 （2）编译静态文件，防止浏览器缓存js问题
 （3）实时监听本地调试页面功能
 
+9.使用 Appium 服务、Android-SDK

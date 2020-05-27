@@ -46,7 +46,7 @@ def local_action():
         local("rm -rf nohup.out")
         local("rm -rf tmp_uwsgi_pid.txt")
         local("rm -rf venv_install.sh")
-        local("rm -rf requirements.txt")
+        local("rm -rf requirements_init.txt")
         local("ls")
     # 归档压缩 临时文件夹中的项目（ 可以不进入目录，直接执行 ）
     with lcd(tmp_path):

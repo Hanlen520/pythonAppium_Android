@@ -1,13 +1,13 @@
 # -*- coding:utf-8 -*-
 
 # 日志、报告、截图 等路径
-LOGS_DIR = "/Users/micllo/Documents/works/GitHub/pythonAppium_Android/Logs/"
-REPORTS_DIR = "/Users/micllo/Documents/works/GitHub/pythonAppium_Android/Reports/"
-SCREENSHOTS_DIR = "/Users/micllo/Documents/works/GitHub/pythonAppium_Android/Screenshots/"
+PRO_PATH = "/Users/micllo/Documents/works/GitHub/pythonAppium_Android/"
+LOGS_DIR = PRO_PATH + "Logs/"
+REPORTS_DIR = PRO_PATH + "Reports/"
+SCREENSHOTS_DIR = PRO_PATH + "Screenshots/"
 
 # 服务器地址
 SERVER_IP = "127.0.0.1"
-
 
 # Nginx 端口
 NGINX_PORT = "6010"
