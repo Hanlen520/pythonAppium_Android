@@ -26,7 +26,7 @@
 【 关于 本地 gulp 部 署 前 后 的 注 意 事 项 】
 1.部署前：
 （1）启动 Docker 的 appium_server 服务
-（2）连接 Docker 中的设备 < 注意：第一次连接时，需要在手机上进行确认授权 >
+（2）在 Docker 中连接设备 < 注意：第一次连接时，需要在手机上进行确认授权 >
 2.部署后：
 （1）手动连接 Docker 中的设备 < 该命令无法使用gulp 必须手动执行 >
 （2）手动确认：Appium服务是否正常启动、Android设备是否正确连接
@@ -196,77 +196,36 @@ pip3 install -v flask==0.12 -i http://mirrors.aliyun.com/pypi/simple/ --trusted-
 （2）找到 设备的ip地址：设置 -> 关于本机 -> 本机状态信息 -> IP地址
 （3）通过ip地址连接设备：adb connect 192.168.31.136:5555
 
-------------------------------------------
-
-【 Android 管理工具 ADB 命令 】
-
-查看设备：adb devices
-
-查看adb版本：adb version
-
-停止adb服务：adb kill-server
-
-查看某设备的屏幕分辨率：adb -s xxxxx shell wm size
-
-查看设备包含的应用程序
-（1）查看所有应用：adb -s 192.168.31.56:5555 shell pm list packages
-（2）查看淘宝应用：adb -s 192.168.31.56:5555 shell pm list packages | grep taobao
-
-安装/卸载应用：
-（1）安装（应用宝）：adb -s 192.168.31.136:5555 install yyb.apk
-（2）卸载（应用宝）：adb -s 192.168.31.136:5555 uninstall < packagename >
-                    package: name='com.tencent.android.qqdownloader'
-                    launchable-activity: name='com.tencent.pangu.link.SplashActivity'
-
-清除应用数据与缓存:
-adb -s 192.168.31.56:5555 shell pm clear < packagename >
-
-查看应用正在运行services
-adb -s 192.168.31.56:5555 shell dumpsys activity services < packagename >
-
-查看应用详细信息:
-adb -s 192.168.31.56:5555 shell dumpsys package < packagename >
-
-唤醒设备屏幕：
-adb -s 15a6c95a shell input keyevent 26
-
-
 
 ########################################################################################################################
 
 
-
 【 服 务 端 配 置 Appium Android 环 境 】
 
-备注：
-    生产环境为了减少意外情况，尽量使用无线连接真机
-    使用无线连接真机，则需要确保 Docker环境 与 真机 处于同一个网络下
 
-未解决的问题：
-    'Docker'中无法获取通过'USB'连接的真机设备
+[ 未 解 决 的 问 题 ]
+'Docker'中无法获取通过'USB'连接的真机设备
 
-环境配置 方案一：
-    若 有些监控的真机无法获取root权限(刷机失败)
-    则 在 linux 上启动一个容器：监控服务(Docker)
-       在 win10 | mac_mini 上安装两个服务：Android-SDK、appium服务
 
-    无线连接设备（需使用一次USB）
-    （1）绑定真机 ：adb connect 192.168.31.136:5555
-    （2）查看设备 ：adb devices
-    （3）安装待测试apk ：adb -s 192.168.31.136:5555 install yyb.apk
+[ 前 提 条 件 ]
+1.生产环境为了减少意外情况，尽量使用无线连接真机
+2.刷机成功的真机 可以直接在手机的超级终端上开启监听端口（ 直接无线连接 ）
+3.不能刷机的真机 可以使用USB通过电脑为该手机开启监听端口 （ 使用一次USB后，可以无线连接 ）
+（ 注：服务器 与 设备 要处于同一网络下 ）
 
-环境配置 方案二：
-    若 待监控的真机全部都可以获取root权限(刷机成功)
-    则 在 linux | win10 | mac_mini 上启用两个容器：监控服务(Docker)、Appium服务(Docker) - budtmo/docker-android-real-device
-      ( 备注：若 使用 linux 则要确保 linux 与 手机 处于同一网络 )
 
-    无线连接设备(Docker）
-    （1）绑定真机（不进入容器）：docker exec -it appium_andriod adb connect 192.168.31.136:5555
-    （2）查看设备（不进入容器）：docker exec -it appium_andriod adb devices
-    （3）安装待测试apk（不进入容器）：docker exec -it appium_andriod adb -s 192.168.31.136:5555 install yyb.apk
+[ 环 境 配 置 方 案 ]
 
-    Appium服务(Docker)中提供的'noVNC'界面地址来查看'appium log'
+1.在 linux | win10 | mac_mini 上启用两个容器：
+（1）监控服务(Docker)
+（2）Appium服务(Docker) - budtmo/docker-android-real-device ：Android-SDK工具、Appium工具
+    （ 注：Appium服务 与 设备 要处于同一网络下 ）
+
+2.所如需要多线程并发执行用例，则需要开启多个Appium服务，且每个Appium服务单独连接一台设备
+
+3.Appium服务(Docker)中提供的'noVNC'界面地址来查看'appium log'
     http://docker_ip:6080
+
 
 ------------------------------------------
 
@@ -357,12 +316,12 @@ adb -s 15a6c95a shell input keyevent 26
 1.使用 Python3 + Appium + unittest + Bootstrap:
 （1）使用'unittest'作为测试用例框架
 （2）通过动态修改和添加'unittest.TestSuite'类中的方法和属性，实现启用多线程同时执行多条测试用例
-（3）通过启用多个Appium服务来实现多线程执行多用例的功能
-（4）通过修改'HTMLTestRunner'文件并结合'unittest'测试框架，优化了测试报告的展示方式，并提供了每个测试用例的截图显示
-（5）所有用例执行后，若有'失败'或'错误'的用例，则发送钉钉和邮件通知
-（6）提供日志记录功能：按照日期区分
-（7）提供定时任务：定时删除过期(一周前)的文件：日志、报告、截图文件(mongo数据)，定时执行测试用例
-（8）提供页面展示项目用例，实现用例上下线、批量执行用例、显示报告、用例运行进度等功能
+（3）通过修改'HTMLTestRunner'文件并结合'unittest'测试框架，优化了测试报告的展示方式，并提供了每个测试用例的截图显示
+（4）所有用例执行后，若有'失败'或'错误'的用例，则发送钉钉和邮件通知
+（5）提供日志记录功能：按照日期区分
+（6）提供定时任务：定时删除过期(一周前)的文件：日志、报告、截图文件(mongo数据)，定时执行测试用例
+（7）提供页面展示项目用例，实现用例上下线、批量执行用例、显示报告、用例运行进度等功能
+（8）通过启用多个Appium服务来实现多线程执行多用例的功能
 
 2.使用 Flask ：
 （1）提供 执行用例的接口
@@ -391,4 +350,4 @@ adb -s 15a6c95a shell input keyevent 26
 （2）编译静态文件，防止浏览器缓存js问题
 （3）实时监听本地调试页面功能
 
-9.使用 Appium 服务、Android-SDK
+9.使用的工具和服务：Android-SDK 工具、Appium 服务

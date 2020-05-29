@@ -45,7 +45,7 @@ class Config(object):
     #     {
     #         'id': 'sync_run_case',
     #         'func': 'TestBase.sync_run_case:suite_sync_run_case',
-    #         'args': ("pro_demo_1"),
+    #         'args': ["pro_demo_1"],
     #         'trigger': 'interval',
     #         'seconds': 60
     #         # 测试使用
